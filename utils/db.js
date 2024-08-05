@@ -61,12 +61,8 @@ class DBClient {
     return this.db.collection('users').insertOne(userData);
   }
 
-  async findUserByEmailAndPassword(email, password) {
-    return this.db.collection('users').findOne({ email, password });
-  }
-
   async getUserById(id) {
-    return this.db.collection('users').findOne({ _id: new ObjectId(id) });
+    return this.db.collection('users').findOne({ _id: ObjectId(id) });
   }
 }
 

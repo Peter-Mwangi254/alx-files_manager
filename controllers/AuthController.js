@@ -6,15 +6,20 @@ const dbClient = require('../utils/db');
 
 class AuthController {
   static async getConnect(req, res) {
-    const authHeader = req.headers.authorization || '';
-    const base64Credentials = authHeader.split(' ')[1];
-    const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
-    const [email, password] = credentials.split(':');
-    const hashedPassword = sha1(password);
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Basic ')) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const credentials = Buffer.from(authHeader.slice(6), 'base64').toString().split(':');
+    if (credentials.length !== 2) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    const [email, password] = credentials;
 
     try {
-      const existingUser = await dbClient.findUserByEmailAndPassword(email, hashedPassword);
-      if (!existingUser) {
+      const existingUser = await dbClient.findUserByEmail(email);
+      if (!existingUser || existingUser.password !== sha1(password)) {
         return res.status(401).json({ error: 'Unauthorized' });
       }
 
@@ -29,7 +34,10 @@ class AuthController {
   }
 
   static async getDisconnect(req, res) {
-    const token = req.header('X-Token');
+    const token = req.headers['x-token'];
+    if (!token) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
     const key = `auth_${token}`;
 
     try {
