@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 const DB_HOST = process.env.DB_HOST || 'localhost';
 const DB_PORT = process.env.DB_PORT || 27017;
@@ -59,6 +59,14 @@ class DBClient {
 
   async createUser(userData) {
     return this.db.collection('users').insertOne(userData);
+  }
+
+  async findUserByEmailAndPassword(email, password) {
+    return await this.db.collection('users').findOne({ email, password });
+  }
+
+  async getUserById(id) {
+    return await this.db.collection('users').findOne({ _id: new ObjectId(id) });
   }
 }
 
