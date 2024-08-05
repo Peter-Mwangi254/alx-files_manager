@@ -61,12 +61,16 @@ class DBClient {
     return this.db.collection('users').insertOne(userData);
   }
 
-  async findUserByEmailAndPassword(email, password) {
-    return this.db.collection('users').findOne({ email, password });
+  async getUserById(id) {
+    return this.db.collection('users').findOne({ _id: ObjectId(id) });
   }
 
-  async getUserById(id) {
-    return this.db.collection('users').findOne({ _id: new ObjectId(id) });
+  async findFileById(fileId) {
+    return this.db.collection('files').findOne({_id: ObjectId(fileId) });
+  }
+
+  async createFile(fileDocument) {
+    return this.db.collection('files').insertOne(fileDocument);
   }
 }
 
