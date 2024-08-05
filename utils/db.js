@@ -72,6 +72,22 @@ class DBClient {
   async createFile(fileDocument) {
     return this.db.collection('files').insertOne(fileDocument);
   }
+
+  async getFilesByParentId(userId, parentId, page, pageSize) {
+    const skip = page * pageSize;
+    return this.db.collection('files')
+      .aggregate([
+        {
+          $match: {
+            userId: ObjectId(userId),
+            parentId: parentId === '0' ? 0 : ObjectId(parentId),
+          },
+        },
+        { $skip: skip },
+        { $limit: pageSize },
+      ])
+      .toArray();
+  }
 }
 
 const dbClient = new DBClient();
