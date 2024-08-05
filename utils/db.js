@@ -52,9 +52,9 @@ class DBClient {
     const numberOfFiles = this.filesCollection.countDocuments();
     return numberOfFiles;
   }
-  
+
   async findUserByEmail(email) {
-    return this.db.collection('users').findOne({email});
+    return this.db.collection('users').findOne({ email });
   }
 
   async createUser(userData) {
