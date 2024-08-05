@@ -62,11 +62,11 @@ class DBClient {
   }
 
   async findUserByEmailAndPassword(email, password) {
-    return await this.db.collection('users').findOne({ email, password });
+    return this.db.collection('users').findOne({ email, password });
   }
 
   async getUserById(id) {
-    return await this.db.collection('users').findOne({ _id: new ObjectId(id) });
+    return this.db.collection('users').findOne({ _id: new ObjectId(id) });
   }
 }
 
