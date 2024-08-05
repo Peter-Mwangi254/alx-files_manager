@@ -52,6 +52,27 @@ class DBClient {
     const numberOfFiles = this.filesCollection.countDocuments();
     return numberOfFiles;
   }
+
+  /**
+   * Creates a new user in the database
+   * @param {string} email - The email of the new user
+   * @param {string} password - The hashed password of the new user
+   * @return {object} The result of the insertion operation
+   */
+  async createUser(email, password) {
+    const result = await this.usersCollection.insertOne({ email, password });
+    return result;
+  }
+
+  /**
+   * Checks if a user with the given email exists in the database
+   * @param {string} email - The email to check for existence
+   * @return {boolean} true if the user exists, false otherwise
+   */
+  async userExist(email) {
+    const user = await this.usersCollection.findOne({ email });
+    return user !== null;
+  }
 }
 
 const dbClient = new DBClient();
