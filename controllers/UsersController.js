@@ -48,8 +48,8 @@ class UserController {
 
       return res.status(200).json({ id: user._id, email: user.email });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Internal Server Error' });
+      console.error(error);
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 }
