@@ -1,9 +1,9 @@
 const { v4: uuidv4 } = require('uuid');
-const redisClient = require('../utils/redis');
-const dbClient = require('../utils/db');
-const { fs } = require('fs');
-const { path } = require('path');
+const fs = require('fs');
+const path = require('path');
 const { ObjectId } = require('mongodb');
+const dbClient = require('../utils/db');
+const redisClient = require('../utils/redis');
 
 const FOLDER_PATH = process.env.FOLDER_PATH || '/tmp/files_manager';
 
@@ -19,7 +19,9 @@ class FilesController {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const { name, type, parentId = 0, isPublic = false, data } = req.body;
+    const {
+      name, type, parentId = 0, isPublic = false, data,
+    } = req.body;
     if (!name) {
       return res.status(400).json({ error: 'Missing name' });
     }
@@ -53,23 +55,22 @@ class FilesController {
       return res.status(201).json({
         id: result.insertedId,
         ...fileDocument,
-	userId: fileDocument.userId.toString(),
+        userId: fileDocument.userId.toString(),
       });
-    } else {
-        const localPath = path.join(FOLDER_PATH, uuidv4());
-	await fs.promises.mkdir(path.dirname(localPath), { recursive: true });;
-	await fs.promises.writeFile(localPath, Buffer.from(data, 'base64'));
-
-	fileDocument.localPath = localPath;
-	const result = await dbClient.createFile(fileDocument);
-
-	return res.status(201).json({
-          id: result.insertedId,
-          ...fileDocument,
-          userId: fileDocument.userId.toString(),
-          localPath: undefined,
-	});
     }
+    const localPath = path.join(FOLDER_PATH, uuidv4());
+    await fs.promises.mkdir(path.dirname(localPath), { recursive: true });
+    await fs.promises.writeFile(localPath, Buffer.from(data, 'base64'));
+
+    fileDocument.localPath = localPath;
+    const result = await dbClient.createFile(fileDocument);
+
+    return res.status(201).json({
+      id: result.insertedId,
+      ...fileDocument,
+      userId: fileDocument.userId.toString(),
+      localPath: undefined,
+    });
   }
 }
 
