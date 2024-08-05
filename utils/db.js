@@ -66,7 +66,7 @@ class DBClient {
   }
 
   async findFileById(fileId) {
-    return this.db.collection('files').findOne({_id: ObjectId(fileId) });
+    return this.db.collection('files').findOne({ _id: ObjectId(fileId) });
   }
 
   async createFile(fileDocument) {
