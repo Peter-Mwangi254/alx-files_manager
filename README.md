@@ -48,8 +48,8 @@ By the end of this project, you will be able to explain:
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository_url>
-   cd <repository_directory>
+   git clone https://github.com/your-username/file-management-platform
+   cd your repository
    ```
 2. **Install dependencies**:
     ```bash
