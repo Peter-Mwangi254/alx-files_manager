@@ -1,7 +1,10 @@
 import sha1 from 'sha1';
+import Bull from 'bull';
 
 const dbClient = require('../utils/db');
 const redisClient = require('../utils/redis');
+
+const userQueue = new Bull('userQueue');
 
 class UserController {
   static async postNew(req, res) {
@@ -22,6 +25,11 @@ class UserController {
 
       const hashedPassword = sha1(password);
       const newUser = await dbClient.createUser({ email, password: hashedPassword });
+
+      await userQueue.add({
+        userId: newUser.insertedId.toString(),
+      });
+
       return res.status(201).json({
         id: newUser.insertedId,
         email,
