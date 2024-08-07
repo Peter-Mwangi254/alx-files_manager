@@ -1,10 +1,10 @@
 const Bull = require('bull');
 const imageThumbnail = require('image-thumbnail');
 const fs = require('fs');
-const path = require('path');
 const dbClient = require('../utils/db');
 
 const fileQueue = new Bull('fileQueue');
+const userQueue = new Bull('userQueue');
 
 fileQueue.process(async (job) => {
   const { userId, fileId } = job.data;
@@ -25,4 +25,15 @@ fileQueue.process(async (job) => {
     const thumbnailPath = `${file.localPath}_${width}`;
     await fs.promises.writeFile(thumbnailPath, Buffer.from(thumbnail, 'base64'));
   }
+});
+
+userQueue.process(async (job) => {
+  const { userId } = job.data;
+
+  if (!userId) throw new Error('Missing userId');
+
+  const user = await dbClient.findUserById(userId);
+  if (!user) throw new Error('User not found');
+
+  console.log(`Welcome ${user.email}!`);
 });
