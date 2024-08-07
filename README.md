@@ -92,5 +92,5 @@ To run the tests, use the following command:
 
 ## Authors
 
-** Nickson Kipruto **
-** Peter Mwangi **
+1. ** Nickson Kipruto **
+2. ** Peter Mwangi **
